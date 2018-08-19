@@ -10,12 +10,11 @@ function Walk-Directory($path = $pwd, [string[]]$exclude)
             # If folder
             Write-Host("[-] " + $item.FullName)
             Walk-Directory $item.FullName $exclude
-        }
-        else {
+        } else {
             # If file
             Write-Host("- " +$item.FullName)
         }
     }
 }
 
-Walk-Directory F:\ *.txt,*.bat,"Scripts",9_Populate_Documents.py
+Walk-Directory J:\ *.txt,*.bat,"Scripts",9_Populate_Documents.py
