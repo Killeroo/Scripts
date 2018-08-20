@@ -12,7 +12,8 @@ function Walk-Directory($path = $pwd, [string[]]$exclude)
             Walk-Directory $item.FullName $exclude
         } else {
             # If file
-            Write-Host("- " +$item.FullName)
+            Write-Host("- " + $item.FullName)
+            Extract-Content $item.FullName
         }
     }
 }
@@ -20,7 +21,8 @@ function Walk-Directory($path = $pwd, [string[]]$exclude)
 Function Extract-Content($path)
 {
     #https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-content?view=powershell-6
-    Get-Content -Path $path -Encoding String >> results.txt
+    Write-Output("`r`n####################`r`n" + $path + "`r`n####################`r`n") | Out-File -Encoding string -Append results.txt
+    Get-Content -Path $path -Encoding String | Out-File -Encoding string -Append results.txt
 }
 
-Walk-Directory J:\ *.txt,*.bat,"Scripts",9_Populate_Documents.py
+Walk-Directory C:\ic-utils 9_Populate_Documents.py,*.exe,*.dll,*.msi,*.mui,*.sdi,*.wim
