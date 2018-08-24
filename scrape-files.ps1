@@ -53,7 +53,7 @@ function Walk-Directory($path = $pwd, [string[]]$exclude, [string[]]$extract)
             }
         }
     }
-
+    #Check-Outfile-Size
 }
 
 # Reads contents of a given file and outputs the raw data to a results text file (specified in $Global:outFullPath)
@@ -79,11 +79,10 @@ Function Extract-Contents([System.IO.FileInfo]$file) #$path)
 #TODO: implement
 Function Check-Outfile-Size()
 {
-    $size = ([System.IO.FileInfo]($outFullPath).Length) / 1KB
-    if ($size > 5000)
-    {
+    if ((Get-Item $outFullPath).Length -gt 5kb) {
         Write-Warning "Oversized"
     }
+    Write-Warning((Get-Item $outFullPath).Length / 1KB);
 }
 
 
