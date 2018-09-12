@@ -1,10 +1,12 @@
+rem build_vs_project.bat
+rem Uses msbuild to build a Visual Studio project
 @echo off
 
 :: Arguments check
 if [%~1]==[] (
     echo.
     echo ERROR: Not enough Arguments
-    echo USAGE: build.bat [C:\path\to\project]
+    echo USAGE: build_vs_project.bat [C:\path\to\project.sln]
     exit /b 1
 )
 set projectPath=%~f1
@@ -19,6 +21,6 @@ set origDir=%~dp0
 cd %msbuildPath%
 
 :: Run build command
-msbuild.exe %projectPath%\PowerPing.sln /p:configuration=release
+msbuild.exe %projectPath% /p:configuration=release
 
 pause
