@@ -1,6 +1,7 @@
-rem build_vs_project.bat
-rem Uses msbuild to build a Visual Studio project
 @echo off
+
+:: build_vs_project.bat
+:: Uses msbuild to build a Visual Studio project
 
 :: Arguments check
 if [%~1]==[] (
@@ -9,18 +10,20 @@ if [%~1]==[] (
     echo USAGE: build_vs_project.bat [C:\path\to\project.sln]
     exit /b 1
 )
-set projectPath=%~f1
 
-:: Set .NET 4.6 framework path
-set msbuildPath="%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\"
+:: Setup paths and variables
+set dotnet_framework_version=v4.0.30319
+set build_configuration=debug
+set build_verbosity=normal
+set project_path=%~f1
+set msbuild_path="%WINDIR%\Microsoft.NET\Framework64\%dotnet_framework_version%\msbuild.exe"
 
-:: Save starting directory
-set origDir=%~dp0
-
-:: Goto msbuild dir
-cd %msbuildPath%
+:: Check paths exist
+IF NOT EXIST %source_file_path% (
+	echo ERROR: source file not found at:
+	echo %source_file_path%
+	exit /b 1
+)
 
 :: Run build command
-msbuild.exe %projectPath% /p:configuration=release
-
-pause
+%msbuild_path% %project_path% /p:configuration=%build_configuration% /verbosity:%build_verbosity%
