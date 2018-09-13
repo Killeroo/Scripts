@@ -12,10 +12,12 @@ ECHO.
 CALL :check_if_admin
 CALL :load_values
 CALL :setup_macros
+CALL :print_windows_logo
+CALL :print_pc_info
 :: Locate exectuables
-:: Add windows logo
+:: Download executables?
+:: PC Info one liner 
 
-ECHO.
 ECHO Welcome to [%computername%] Matthew . . . 
 GOTO:eof
 
@@ -26,6 +28,7 @@ if %errorLevel% == 0 (
 ) else (
 	ECHO Not Running as Administrator
 	CHOICE /M "Would you like to elevate cmd "
+	ECHO %errorlevel%
 	IF %errorlevel% EQU 0 (
 		ECHO I've copied %dp0~
 		ECHO Attempting to Elevate Command Prompt. . . 
@@ -58,16 +61,20 @@ DOSKEY edit=%~dp0micro.exe :: FIX PATH
 DOSKEY rain=powershell.exe %CD%Code\Powershell\rainbow.ps1 :: FIX PATH
 DOSKEY drives=type %TEMP%\tempDriveInfo.txt :: BUG: variable is being overwritten with each line in the text file, HACK: Just type out the text file?
 :: ADD GIT: Maybe add option to specify utility memory stick
+:: ADD POWERPING
 GOTO:eof
 
 :print_windows_logo
-:: SHORTEN & ESCAPE
-@(("         ,.=:^!^!t3Z3z.,`n","red"), ("        :tt:::tt333EE3`n","red"),("        Et:::ztt33EEE","red"),("  @Ee.,      ..,`n","green"),("       ;tt:::tt333EE7","red"),(" ;EEEEEEttttt33#`n","green"),("      :Et:::zt333EEQ.","red"),(" SEEEEEttttt33QL`n","green"),("      it::::tt333EEF","red"),(" @EEEEEEttttt33F`n","green"),("     ;3=*^``````'*4EEV","red"),(" :EEEEEEttttt33@.`n","green"),("     ,.=::::it=.,","cyan"),(" ``","red"),(" @EEEEEEtttz33QF`n","green"),("    ;::::::::zt33)","cyan"),("   '4EEEtttji3P*`n","green"),("   :t::::::::tt33.","cyan"),(":Z3z..","yellow"),("  ````","green"),(" ,..g.`n","yellow"),("   i::::::::zt33F","cyan"),(" AEEEtttt::::ztF`n","yellow"),("  ;:::::::::t33V","cyan"),(" ;EEEttttt::::t3`n","yellow"),("  E::::::::zt33L","cyan"),(" @EEEtttt::::z3F`n","yellow"),(" {3=*^``````'*4E3)","cyan"),(" ;EEEtttt:::::tz```n","yellow"),("             ``","cyan"),(" :EEEEtttt::::z7`n","yellow"),("                 'VEzjt:;;z>*```n","yellow"),("                      ````","yellow")) | Foreach-Object {Write-Host $_[0] -ForegroundColor $_[1] -NoNewline}
-:: Good:
-powershell -c "@(((\" \"*9+\",.=:^!^!t3Z3z.,`n\"),\"red\"), ((\" \"*8+\":tt:::tt333EE3`n\"),\"red\"),((\" \"*8+\"Et:::ztt33EEE\"),\"red\"),(\"  @Ee.,      ..,`n\",\"green\"),((\" \"*7+\";tt:::tt333EE7\"),\"red\"),(\" ;EEEEEEttttt33#`n\",\"green\"),((\" \"*6+\"      :Et:::zt333EEQ.\"),\"red\"),(\" SEEEEEttttt33QL`n\",\"green\"),((\" \"*6+\"it::::tt333EEF\"),\"red\"),(\" @EEEEEEttttt33F`n\",\"green\"),(\"     ;3=*^``````'*4EEV\",\"red\"),(\" :EEEEEEttttt33@.`n\",\"green\"),(\"     ,.=::::it=.,\",\"cyan\"),(\" ``\",\"red\"),(\" @EEEEEEtttz33QF`n\",\"green\"),(\"    ;::::::::zt33)\",\"cyan\"),(\"   '4EEEtttji3P*`n\",\"green\"),(\"   :t::::::::tt33.\",\"cyan\"),(\":Z3z..\",\"yellow\"),(\"  ````\",\"green\"),(\" ,..g.`n\",\"yellow\"),(\"   i::::::::zt33F\",\"cyan\"),(\" AEEEtttt::::ztF`n\",\"yellow\"),(\"  ;:::::::::t33V\",\"cyan\"),(\" ;EEEttttt::::t3`n\",\"yellow\"),(\"  E::::::::zt33L\",\"cyan\"),(\" @EEEtttt::::z3F`n\",\"yellow\"),(\" {3=*^``````'*4E3)\",\"cyan\"),(\" ;EEEtttt:::::tz```n\",\"yellow\"),((\" \"*13+\"``\"),\"cyan\"),(\" :EEEEtttt::::z7`n\",\"yellow\")) | Foreach-Object {Write-Host $_[0] -ForegroundColor $_[1] -NoNewline}"
-:: Fullversion
-:: BUG: formatting problem in last part of array
-powershell -c "$r=\"red\";$g=\"green\";$c=\"cyan\";$y=\"yellow\";@(((\" \"*9+\",.=:^!^!t3Z3z.,`n\"),$g), ((\" \"*8+\":tt:::tt333EE3`n\"),$r),((\" \"*8+\"Et:::ztt33EEE\"),$r),(\"  @Ee.,      ..,`n\",$g),((\" \"*7+\";tt:::tt333EE7\"),$r),(\" ;EEEEEEttttt33#`n\",$g),((\" \"*6+\":Et:::zt333EEQ.\"),$r),(\" SEEEEEttttt33QL`n\",$g),((\" \"*6+\"it::::tt333EEF\"),$r),(\" @EEEEEEttttt33F`n\",$g),(\"     ;3=*^``````'*4EEV\",$r),(\" :EEEEEEttttt33@.`n\",$g),(\"     ,.=::::it=.,\",$c),(\" ``\",$r),(\" @EEEEEEtttz33QF`n\",$g),(\"    ;::::::::zt33)\",$c),(\"   '4EEEtttji3P*`n\",$g),(\"   :t::::::::tt33.\",$c),(\":Z3z..\",$y),(\"  ````\",$g),(\" ,..g.`n\",$y),(\"   i::::::::zt33F\",$c),(\" AEEEtttt::::ztF`n\",$y),(\"  ;:::::::::t33V\",$c),(\" ;EEEttttt::::t3`n\",$y),(\"  E::::::::zt33L\",$c),(\" @EEEtttt::::z3F`n\",$y),(\" {3=*^``````'*4E3)\",$c),(\" ;EEEtttt:::::tz```n\",$y),((\" \"*13+\"``\"),$c),(\" :EEEEtttt::::z7`n\",$y),((\" \"*18+\"'VEzjt:;;z>*```n\"),$y),((\" \"*22+\"````\"),$y)) | Foreach-Object {Write-Host $_[0] -ForegroundColor $_[1] -NoNewline}"
+:: Witness me.
+ECHO.
+ECHO.
+powershell -c "$r=\"red\";$g=\"green\";$c=\"cyan\";$y=\"yellow\";@(((\" \"*9+\",.=:^^!^^!t3Z3z.,`n\"),$r), ((\" \"*8+\":tt:::tt333EE3`n\"),$r),((\" \"*8+\"Et:::ztt33EEE\"),$r),(\"  @Ee.,      ..,`n\",$g),((\" \"*7+\";tt:::tt333EE7\"),$r),(\" ;EEEEEEttttt33#`n\",$g),((\" \"*6+\":Et:::zt333EEQ.\"),$r),(\" SEEEEEttttt33QL`n\",$g),((\" \"*6+\"it::::tt333EEF\"),$r),(\" @EEEEEEttttt33F`n\",$g),(\"     ;3=*^``````'*4EEV\",$r),(\" :EEEEEEttttt33@.`n\",$g),(\"     ,.=::::it=.,\",$c),(\" ``\",$r),(\" @EEEEEEtttz33QF`n\",$g),(\"    ;::::::::zt33)\",$c),(\"   '4EEEtttji3P*`n\",$g),(\"   :t::::::::tt33.\",$c),(\":Z3z..\",$y),(\"  ````\",$g),(\" ,..g.`n\",$y),(\"   i::::::::zt33F\",$c),(\" AEEEtttt::::ztF`n\",$y),(\"  ;:::::::::t33V\",$c),(\" ;EEEttttt::::t3`n\",$y),(\"  E::::::::zt33L\",$c),(\" @EEEtttt::::z3F`n\",$y),(\" {3=*^``````'*4E3)\",$c),(\" ;EEEtttt:::::tz```n\",$y),((\" \"*13+\"``\"),$c),(\" :EEEEtttt::::z7`n\",$y),((\" \"*18+\"'VEzj;;z^>*```n\"),$y),((\" \"*22+\"````\"),$y)) | Foreach-Object {Write-Host $_[0] -ForegroundColor $_[1] -NoNewline}"
+ECHO.
+GOTO:eof
+
+:print_pc_info
+powershell -c "Write-Host(\"\\\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Domain) -ForegroundColor DarkGreen -nonewline;Write-Host(\"\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Name + \" \") -ForegroundColor Green -nonewline ; Write-Host([math]::Round((Get-WmiObject win32_computersystem).TotalPhysicalMemory/1GB)) -ForegroundColor red -nonewline; Write-Host(\"GB \") -ForegroundColor red -nonewline; Write-Host((Get-WmiObject win32_processor).Name + \" \") -ForegroundColor yellow -nonewline; Write-Host((Get-WmiObject win32_videocontroller).Name) -ForegroundColor cyan"
+ECHO.
 GOTO:eof
 
 rem SET command=/k `"%~dp0macros.cmd`"
