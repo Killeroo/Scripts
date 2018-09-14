@@ -1,7 +1,6 @@
 rem macros.cmd version 3
 :: Sources: https://superuser.com/a/231032
 
-
 @ECHO OFF
 GOTO :Setup
 ECHO ON
@@ -11,11 +10,10 @@ EXIT
 ECHO.
 CALL :check_if_admin
 CALL :load_values
+CALL :locate_executables
 CALL :setup_macros
 CALL :print_windows_logo
 CALL :print_pc_info
-CALL :locate_executables
-:: Download executables?
 
 ECHO Welcome to [%computername%] Matthew . . . 
 GOTO:eof
@@ -51,18 +49,38 @@ ECHO Setting up macros...
 :: ORDER
 DOSKEY ?=doskey /macros
 DOSKEY p=powershell
-DOSKEY c=start %CD%Code\NetworkTest\ConnectionPing.bat :: FIX PATH
 DOSKEY reset=color 07
 DOSKEY a=dir /o:d
 DOSKEY ls=dir /a:h
 DOSKEY open=start .
-DOSKEY networktest=%~dp0Code\NetworkTest\NetworkTest.bat :: FIX PATH
-DOSKEY backup=%CD%gobackitup.exe :: FIX PATH
-DOSKEY edit=%~dp0micro.exe :: FIX PATH
-DOSKEY rain=powershell.exe %CD%Code\Powershell\rainbow.ps1 :: FIX PATH
 DOSKEY drives=type %TEMP%\tempDriveInfo.txt :: BUG: variable is being overwritten with each line in the text file, HACK: Just type out the text file?
-:: ADD GIT: Maybe add option to specify utility memory stick
-:: ADD POWERPING
+
+:: Only load program and script macros if utility memory stick
+:: has been found
+IF NOT "%usb%"=="" (
+	:: Programs
+	DOSKEY git=%usb%\GitPortable\bin\git.exe
+	DOSKEY powerping=%usb%\PowerPing.exe
+	DOSKEY httpping=%usb%\HttpPing.exe
+	DOSKEY gobackitup=%usb%\gobackitup.exe
+	DOSKEY skimmer=%usb%\skimmer.exe
+	DOSKEY stitcher=%usb%\stitcher.exe
+	DOSKEY basictransfer=%usb%\BasicTransfer.exe
+	DOSKEY clock=%usb%\ConsoleClock.exe
+	DOSKEY xsv=%usb%\xsv.exe
+	DOSKEY micro=%usb%\micro.exe
+	DOSKEY lua=%usb%\lua53.exe
+	DOSKEY taskmanager=START %usb%\procexp64.exe
+	DOSKEY tcpview=START %usb%\tcpview.exe
+
+	:: Scripts
+	DOSKEY networktest=START %usb%\NetworkTests\NetworkTest\NetworkTest.bat
+	DOSKEY colouredping=START %usb%\Scripts\colour_ping.bat
+	DOSKEY scrape=Powershell.exe -f %usb%\Scripts\scrape-files.ps1
+	DOSKEY update=START %usb%\Scripts\update_repos.bat
+	DOSKEY scan=START %usb%\Scripts\AuditScan.ps1
+	DOSKEY rain=Powershell.exe -f %usb%\Scripts\rain.ps1
+)
 GOTO:eof
 
 :print_windows_logo
@@ -79,18 +97,19 @@ powershell -c "Write-Host(\"\\\\\") -nonewline;Write-Host((Get-WmiObject win32_c
 ECHO.
 GOTO:eof
 
-:: Source: https://stackoverflow.com/a/9066394
 :locate_executables
 :: Find memory stick with label 'UTILS'
+:: Source: https://stackoverflow.com/a/9066394
 for /f %%D in ('wmic volume get DriveLetter^, Label ^| find "UTILS"') do set usb=%%D
 IF "%usb%"=="" (
-	ECHO Not Found
-	PAUSE
+	ECHO Could not find utility drive.
+	ECHO Executables and additional scripts will not be loaded.
+	ECHO Please insert usb with label 'UTILS' to load from
+	:: TODO: add option to specify utility memory stick
+	GOTO:eof
 ) ELSE (
-	ECHO Found
-	PAUSE
+	ECHO Utility drive found.
 )
-
 GOTO:eof
 
 rem SET command=/k `"%~dp0macros.cmd`"
