@@ -14,9 +14,8 @@ CALL :load_values
 CALL :setup_macros
 CALL :print_windows_logo
 CALL :print_pc_info
-:: Locate exectuables
+CALL :locate_executables
 :: Download executables?
-:: PC Info one liner 
 
 ECHO Welcome to [%computername%] Matthew . . . 
 GOTO:eof
@@ -30,7 +29,9 @@ if %errorLevel% == 0 (
 	CHOICE /M "Would you like to elevate cmd "
 	ECHO %errorlevel%
 	IF %errorlevel% EQU 0 (
-		ECHO I've copied %dp0~
+		ECHO %~dp0 | clip
+		ECHO I've copied this location to your clipboard,
+		ECHO See you soon.
 		ECHO Attempting to Elevate Command Prompt. . . 
 		powershell.exe -Command "Start-Process cmd.exe -verb RunAs" >nul 2>&1 && EXIT
 		ECHO Elevation failed.
@@ -70,11 +71,26 @@ ECHO.
 ECHO.
 powershell -c "$r=\"red\";$g=\"green\";$c=\"cyan\";$y=\"yellow\";@(((\" \"*9+\",.=:^^!^^!t3Z3z.,`n\"),$r), ((\" \"*8+\":tt:::tt333EE3`n\"),$r),((\" \"*8+\"Et:::ztt33EEE\"),$r),(\"  @Ee.,      ..,`n\",$g),((\" \"*7+\";tt:::tt333EE7\"),$r),(\" ;EEEEEEttttt33#`n\",$g),((\" \"*6+\":Et:::zt333EEQ.\"),$r),(\" SEEEEEttttt33QL`n\",$g),((\" \"*6+\"it::::tt333EEF\"),$r),(\" @EEEEEEttttt33F`n\",$g),(\"     ;3=*^``````'*4EEV\",$r),(\" :EEEEEEttttt33@.`n\",$g),(\"     ,.=::::it=.,\",$c),(\" ``\",$r),(\" @EEEEEEtttz33QF`n\",$g),(\"    ;::::::::zt33)\",$c),(\"   '4EEEtttji3P*`n\",$g),(\"   :t::::::::tt33.\",$c),(\":Z3z..\",$y),(\"  ````\",$g),(\" ,..g.`n\",$y),(\"   i::::::::zt33F\",$c),(\" AEEEtttt::::ztF`n\",$y),(\"  ;:::::::::t33V\",$c),(\" ;EEEttttt::::t3`n\",$y),(\"  E::::::::zt33L\",$c),(\" @EEEtttt::::z3F`n\",$y),(\" {3=*^``````'*4E3)\",$c),(\" ;EEEtttt:::::tz```n\",$y),((\" \"*13+\"``\"),$c),(\" :EEEEtttt::::z7`n\",$y),((\" \"*18+\"'VEzj;;z^>*```n\"),$y),((\" \"*22+\"````\"),$y)) | Foreach-Object {Write-Host $_[0] -ForegroundColor $_[1] -NoNewline}"
 ECHO.
+ECHO.
 GOTO:eof
 
 :print_pc_info
 powershell -c "Write-Host(\"\\\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Domain) -ForegroundColor DarkGreen -nonewline;Write-Host(\"\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Name + \" \") -ForegroundColor Green -nonewline ; Write-Host([math]::Round((Get-WmiObject win32_computersystem).TotalPhysicalMemory/1GB)) -ForegroundColor red -nonewline; Write-Host(\"GB \") -ForegroundColor red -nonewline; Write-Host((Get-WmiObject win32_processor).Name + \" \") -ForegroundColor yellow -nonewline; Write-Host((Get-WmiObject win32_videocontroller).Name) -ForegroundColor cyan"
 ECHO.
+GOTO:eof
+
+:: Source: https://stackoverflow.com/a/9066394
+:locate_executables
+:: Find memory stick with label 'UTILS'
+for /f %%D in ('wmic volume get DriveLetter^, Label ^| find "UTILS"') do set usb=%%D
+IF "%usb%"=="" (
+	ECHO Not Found
+	PAUSE
+) ELSE (
+	ECHO Found
+	PAUSE
+)
+
 GOTO:eof
 
 rem SET command=/k `"%~dp0macros.cmd`"
