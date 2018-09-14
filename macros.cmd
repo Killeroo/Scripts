@@ -80,6 +80,9 @@ IF NOT "%usb%"=="" (
 	DOSKEY update=START %usb%\Scripts\update_repos.bat
 	DOSKEY scan=START %usb%\Scripts\AuditScan.ps1
 	DOSKEY rain=Powershell.exe -f %usb%\Scripts\rain.ps1
+
+	:: Example of passing arguments through to doskey macro
+	::doskey s=if $1. equ . ("C:\Program Files (x86)\Git\bin\sh.exe" --login) else "C:\Program Files (x86)\Git\bin\sh.exe" --login -c "$*"
 )
 GOTO:eof
 
@@ -93,9 +96,10 @@ ECHO.
 GOTO:eof
 
 :print_pc_info
-powershell -c "Write-Host(\"\\\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Domain) -ForegroundColor DarkGreen -nonewline;Write-Host(\"\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Name + \" \") -ForegroundColor Green -nonewline ; Write-Host([math]::Round((Get-WmiObject win32_computersystem).TotalPhysicalMemory/1GB)) -ForegroundColor red -nonewline; Write-Host(\"GB \") -ForegroundColor red -nonewline; Write-Host((Get-WmiObject win32_processor).Name + \" \") -ForegroundColor yellow -nonewline; Write-Host((Get-WmiObject win32_videocontroller).Name) -ForegroundColor cyan"
+powershell -c "Write-Host(\"\\\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Domain) -ForegroundColor DarkGreen -nonewline;Write-Host(\"\\\") -nonewline;Write-Host((Get-WmiObject win32_computersystem).Name + \" \") -ForegroundColor Green -nonewline ; Write-Host([math]::Round((Get-WmiObject win32_computersystem).TotalPhysicalMemory/1GB)) -ForegroundColor red -nonewline; Write-Host(\"GB \") -ForegroundColor red -nonewline; Write-Host((Get-WmiObject win32_processor).Name + \" \") -ForegroundColor yellow -nonewline; Write-Host((Get-WmiObject win32_videocontroller).Name) -ForegroundColor cyan; Write-Host ((gwmi Win32_NetworkAdapterConfiguration|?{$_.ipenabled}).IPAddress) -ForegroundColor Magenta"
 ECHO.
 GOTO:eof
+::-replace "`t|`n|`r",""
 
 :locate_executables
 :: Find memory stick with label 'UTILS'
@@ -111,11 +115,3 @@ IF "%usb%"=="" (
 	ECHO Utility drive found.
 )
 GOTO:eof
-
-rem SET command=/k `"%~dp0macros.cmd`"
-rem SET command=/s /k %~dp0macros.cmd
-rem powershell.exe -Command "&{ start-process \"%cd%\test.bat\" -verb runas }
-rem powershell.exe -command "Start-Process cmd.exe -verb RunAs -ArgumentList `"%command%`""
-rem powershell.exe -command "Start-Process cmd.exe -verb RunAs -ArgumentList "%command%""
-rem powershell.exe -command "Start-Process cmd.exe %command% -verb RunAs"
-rem powershell.exe -command "Start-Process cmd.exe -verb RunAs -ArgumentList `"%command%`""
