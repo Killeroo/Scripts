@@ -2,9 +2,6 @@ rem macros.cmd version 3
 :: Sources: https://superuser.com/a/231032
 
 @ECHO OFF
-GOTO :Setup
-ECHO ON
-EXIT
 
 :Setup
 ECHO.
@@ -66,13 +63,13 @@ IF NOT "%usb%"=="" (
 	DOSKEY skimmer=%usb%\skimmer.exe
 	DOSKEY stitcher=%usb%\stitcher.exe
 	DOSKEY basictransfer=%usb%\BasicTransfer.exe
-	DOSKEY clock=%usb%\ConsoleClock.exe
 	DOSKEY xsv=%usb%\xsv.exe
 	DOSKEY micro=%usb%\micro.exe
 	DOSKEY lua=%usb%\lua53.exe
 	DOSKEY taskmanager=START %usb%\procexp64.exe
 	DOSKEY tcpview=START %usb%\tcpview.exe
-
+	DOSKEY hexed=%usb%\hexed.exe
+	
 	:: Scripts
 	DOSKEY networktest=START %usb%\NetworkTests\NetworkTest\NetworkTest.bat
 	DOSKEY colouredping=START %usb%\Scripts\colour_ping.bat

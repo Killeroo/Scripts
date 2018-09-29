@@ -34,6 +34,7 @@ percent=$(awk "BEGIN { pc=100*${outdated_packages}/${installed_packages}; i=int(
 # Check for OS update
 printf '\n\e[4mOPERATING SYSTEM UPDATES\e[0m\n'
 do-release-upgrade -c
+apt-get dist-update
 
 # Display stats
 printf '\n\e[4mPACKAGE STATS\e[0m\n'
