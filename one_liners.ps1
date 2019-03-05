@@ -11,3 +11,7 @@ $pos = $host.UI.RawUI.CursorPosition; $pos.x += 5; $host.UI.RawUI.CursorPosition
 
 # Show all properties of an object
 Get-WmiObject win32_computersystem | Format-List * -Force
+
+# Search for string recursively in files with particular extension
+Get-ChildItem -Recurse | foreach { if ($_.Extension -eq ".php") { Get-Content $_.FullName |
+ Where-Object { $_.Contains("Something") }}}
