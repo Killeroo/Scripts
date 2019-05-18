@@ -123,12 +123,68 @@ FOR /f "delims=" %%a IN (' powershell -C Get-ExecutionPolicy') DO SET "script_po
 ECHO Execution Policy: %script_policy% >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
 
+:: Get user accounts
+ECHO Getting user accounts...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO User Accounts >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+wmic USERACCOUNT list full | Out-String >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
 :: Get list of services
 ECHO Gathering services...
 ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO Services >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
-wmic service get name, state, caption | find /v "" >> %ORIGINAL_PATH%%LOG_NAME% 
+wmic service get caption, name, state, pathname | find /v "" >> %ORIGINAL_PATH%%LOG_NAME% 
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get list of startup programs
+ECHO Getting startup programs...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Startup Programs >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+wmic startup get Caption,Command,Location,User >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get scheduled tasks
+ECHO Getting scheduled tasks...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Scheduled tasks >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+schtasks /query /fo LIST /v >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get running processes
+ECHO Dumping running processes...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Running Processes >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+wmic process get CSName,Description,ExecutablePath,ProcessId >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get all installed drivers
+ECHO Querying drivers...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Installed drivers >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+driverquery >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get all windows updates
+ECHO Getting Windows update...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Installed Windows updates >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+wmic qfe get Caption,Description,HotFixID,InstalledOn >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get all NICs
+ECHO Getting network interfaces...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Network Interfaces >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
+wmic nicconfig where IPEnabled='true' get Caption,DefaultIPGateway,Description,DHCPEnabled,DHCPServer,IPAddress,IPSubnet,MACAddress >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
 
 :: Get network adapter configurations
@@ -138,6 +194,46 @@ ECHO Network Adapter Configuration >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
 IPCONFIG /all >> %ORIGINAL_PATH%%LOG_NAME% 
 ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get network shares
+ECHO Getting network shares...
+ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Network Shares >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME% 
+wmic netuse list >> %ORIGINAL_PATH%%LOG_NAME% 
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get routing info
+ECHO Fetching route table...
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Route Table >>%ORIGINAL_PATH%%LOG_NAME%
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+route print >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
+
+:: Get ARP info
+ECHO Getting ARP entries...
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO ARP Entries >>%ORIGINAL_PATH%%LOG_NAME%
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+arp -a >> %ORIGINAL_PATH%%LOG_NAME%  
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME% 
+
+:: Get netusers
+ECHO Getting netusers...
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Network Users >>%ORIGINAL_PATH%%LOG_NAME%
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+net users >> %ORIGINAL_PATH%%LOG_NAME%  
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME% 
+
+:: Get current network statistics
+ECHO Getting current network statistics...
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO Network Statistics >>%ORIGINAL_PATH%%LOG_NAME%
+ECHO ------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
+netstat -ano >> %ORIGINAL_PATH%%LOG_NAME%  
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME% 
 
 :: Firewall status
 ECHO Obtaining firewall information...
@@ -152,6 +248,7 @@ ECHO -------------------------------- >> %ORIGINAL_PATH%%LOG_NAME%
 ECHO Firewall Rules>> %ORIGINAL_PATH%%LOG_NAME%
 ECHO -------------------------------->> %ORIGINAL_PATH%%LOG_NAME%
 netsh advfirewall firewall show rule name=all dir=in type=dynamic >> %ORIGINAL_PATH%%LOG_NAME%
+ECHO. >> %ORIGINAL_PATH%%LOG_NAME%
 
 :: Display basic results
 ECHO.
