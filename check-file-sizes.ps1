@@ -1,7 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$root = "C:\",
     [Parameter(Mandatory=$true)][int]$size = 200mb,
-    [Parameter(Mandatory=$true)[string[]]$include = (".php", ".gem")
+    [Parameter(Mandatory=$true)][string[]]$include = (".php", ".gem")
 )
 
 $Global:fileSizeLimit = ($size * 1024 * 1024)
