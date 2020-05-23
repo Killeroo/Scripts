@@ -1,0 +1,1 @@
+for /F "tokens=*" %a in ('git ls-files -ci --exclude-standard') do @git rm --cached "%a"
