@@ -1,0 +1,1 @@
+﻿[reflection.assemblyname]::GetAssemblyName($args[0]).ProcessorArchitecture
